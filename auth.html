@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <title>Meistriukas – prisijungimas ir registracija</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{background:#f5f5f7;color:#111827;line-height:1.5;}
+    a{text-decoration:none;color:inherit;}
+    header{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10;}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px;}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:12px;flex-wrap:wrap;}
+    .logo{font-weight:700;font-size:20px;}
+    .logo span{color:#2563eb;}
+    nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    button{border:none;cursor:pointer;border-radius:999px;padding:8px 16px;font-size:14px;}
+    .btn-outline{background:transparent;border:1px solid #d1d5db;}
+    .btn-primary{background:#2563eb;color:#fff;}
+    .muted{font-size:12px;color:#9ca3af;}
+    main{padding:24px 0 40px;}
+    .auth-wrapper{max-width:480px;margin:0 auto;background:#fff;border-radius:20px;padding:18px 18px 16px;box-shadow:0 18px 45px rgba(15,23,42,.15);}
+    .auth-tabs{display:inline-flex;border-radius:999px;background:#e5e7eb;padding:3px;margin:8px 0 12px;}
+    .auth-tabs button{padding:6px 12px;font-size:13px;border-radius:999px;border:none;background:transparent;color:#4b5563;}
+    .auth-tabs button.active{background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.15);color:#111827;}
+    label{font-size:13px;color:#374151;display:block;margin-bottom:4px;}
+    input[type="email"],input[type="password"],input[type="text"],select{
+      width:100%;border-radius:10px;border:1px solid #d1d5db;padding:8px 10px;font-size:14px;outline:none;
+    }
+    input:focus,select:focus{border-color:#2563eb;box-shadow:0 0 0 1px #2563eb22;}
+    .field{margin-bottom:10px;}
+    .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+    .remember-row{display:flex;align-items:center;gap:6px;font-size:12px;color:#4b5563;}
+    .auth-footer{margin-top:6px;font-size:11px;color:#9ca3af;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container header-inner">
+    <div class="logo"><a href="/">Meistriukas</a><span>.lt</span></div>
+    <nav>
+      <a href="/"><button class="btn-outline">Pagrindinis</button></a>
+      <a href="/ads.html"><button class="btn-outline">Skelbimai</button></a>
+      <span class="muted" id="currentUserLabel">Neprisijungta</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="auth-wrapper">
+    <h2 style="font-size:18px;font-weight:600;">Paskyra</h2>
+    <p class="muted" id="authSubtitle">Prisijunk arba susikurk naują paskyrą.</p>
+
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')">Prisijungti</button>
+      <button id="tabRegister" onclick="switchAuthTab('register')">Registruotis</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="field">
+        <label for="loginEmail">El. paštas</label>
+        <input id="loginEmail" type="email" required placeholder="tavo@pastas.lt">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Slaptažodis</label>
+        <input id="loginPassword" type="password" required placeholder="••••••••">
+      </div>
+      <div class="row">
+        <label class="remember-row">
+          <input id="rememberMe" type="checkbox" style="width:auto;">
+          Prisiminti mane šiame įrenginyje
+        </label>
+        <span class="muted">Tik demo – nenaudok tikrų slaptažodžių</span>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:4px;">Prisijungti</button>
+      <div class="auth-footer">
+        Jei pažymėsi „Prisiminti mane“, tavo el. paštas ir slaptažodis bus išsaugoti localStorage ir
+        kitą kartą jie bus automatiškai užpildyti. <strong>Nenaudok tikrų slaptažodžių!</strong>
+      </div>
+    </form>
+
+    <!-- REGISTER -->
+    <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+      <div class="field">
+        <label for="regName">Vardas</label>
+        <input id="regName" type="text" required placeholder="Vardas">
+      </div>
+      <div class="field">
+        <label for="regEmail">El. paštas</label>
+        <input id="regEmail" type="email" required placeholder="tavo@pastas.lt">
+      </div>
+      <div class="field">
+        <label for="regPassword">Slaptažodis</label>
+        <input id="regPassword" type="password" required placeholder="••••••••">
+      </div>
+      <div class="field">
+        <label for="regRole">Rolė</label>
+        <select id="regRole" required>
+          <option value="client">Esu klientas (ieškau meistro)</option>
+          <option value="master">Esu meistras (teikiu paslaugas)</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:4px;">Registruotis</button>
+      <div class="auth-footer">
+        Registruojantis, vartotojas bus išsaugotas tavo naršyklėje (localStorage).
+        Vėliau galėsi prisijungti su tais pačiais duomenimis.
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  // Bendra: vartotojo rodymas header'yje
+  function updateHeaderUserLabel() {
+    const label = document.getElementById('currentUserLabel');
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) { label.textContent = 'Neprisijungta'; return; }
+    try {
+      const user = JSON.parse(raw);
+      const roleText = user.role === 'master' ? 'meistras' : 'klientas';
+      label.textContent = `Prisijungęs kaip: ${user.name} (${roleText})`;
+    } catch { label.textContent = 'Neprisijungta'; }
+  }
+
+  function switchAuthTab(tab) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const subtitle = document.getElementById('authSubtitle');
+
+    if (tab === 'login') {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      subtitle.textContent = 'Prisijunk su esama paskyra.';
+    } else {
+      registerForm.style.display = 'block';
+      loginForm.style.display = 'none';
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      subtitle.textContent = 'Susikurk naują paskyrą Meistriuke.';
+    }
+  }
+
+  // Užkraunam page mode iš ?mode=...
+  function initModeFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    if (mode === 'register') switchAuthTab('register');
+    else switchAuthTab('login');
+  }
+
+  function getUsers() {
+    const raw = localStorage.getItem('users') || '[]';
+    try { return JSON.parse(raw); } catch { return []; }
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    const role = document.getElementById('regRole').value;
+
+    let users = getUsers();
+    if (users.find(u => u.email === email)) {
+      alert('Toks el. paštas jau užregistruotas. Pabandyk prisijungti.');
+      switchAuthTab('login');
+      document.getElementById('loginEmail').value = email;
+      return;
+    }
+
+    const newUser = { name, email, password, role };
+    users.push(newUser);
+    saveUsers(users);
+
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    alert('Paskyra sukurta ir prisijungta (demo).');
+    window.location.href = '/';
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const remember = document.getElementById('rememberMe').checked;
+
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (!user) {
+      alert('Neteisingas el. paštas arba slaptažodis (demo duomenys saugomi naršyklėje).');
+      return;
+    }
+
+    localStorage.setItem('currentUser', JSON.stringify(user));
+
+    if (remember) {
+      localStorage.setItem('rememberedLogin', JSON.stringify({ email, password }));
+    } else {
+      localStorage.removeItem('rememberedLogin');
+    }
+
+    alert('Sėkmingai prisijungei (demo).');
+    window.location.href = '/';
+  }
+
+  function preloadRememberedLogin() {
+    const raw = localStorage.getItem('rememberedLogin');
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      document.getElementById('loginEmail').value = data.email || '';
+      document.getElementById('loginPassword').value = data.password || '';
+      document.getElementById('rememberMe').checked = true;
+    } catch {}
+  }
+
+  updateHeaderUserLabel();
+  initModeFromQuery();
+  preloadRememberedLogin();
+</script>
+</body>
+</html>
