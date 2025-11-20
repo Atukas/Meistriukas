@@ -112,6 +112,7 @@
     window.location.href = '/create-ad.html';
   }
 
+  // Demo skelbimai
   const demoAds = [
     {
       title:'Sienos dažymas svetainėje',
@@ -121,7 +122,8 @@
       budget:'~120 €',
       deadline:'Per 1 savaitę',
       ownerName:'Demo klientas',
-      photos:[]
+      photos:[],
+      isDemo:true
     },
     {
       title:'Trinkelių klojimas kieme',
@@ -131,7 +133,8 @@
       budget:'Derinama',
       deadline:'Per 2–3 savaites',
       ownerName:'Demo klientas',
-      photos:[]
+      photos:[],
+      isDemo:true
     },
     {
       title:'Dušo kabinos montavimas',
@@ -141,7 +144,8 @@
       budget:'~80–100 €',
       deadline:'Šią savaitę',
       ownerName:'Demo klientas',
-      photos:[]
+      photos:[],
+      isDemo:true
     },
   ];
 
@@ -155,30 +159,30 @@
     const list = document.getElementById('adsList');
     list.innerHTML = '';
 
-    const localJobs = loadLocalJobs();
+    const localJobsRaw = loadLocalJobs();
 
-    const all = [
-      ...demoAds,
-      ...localJobs.map(j => ({
-        title: j.title,
-        city: j.city,
-        category: j.category,
-        desc: j.description || 'Skelbimas sukurtas per formą (demo).',
-        budget: j.budget ? '~' + j.budget + ' €' : 'Laukiama
-        pasiūlymų',
-        deadline: j.deadline || 'Lankstu',
-        ownerName: j.ownerName || 'Nežinomas klientas',
-        photos: j.photos || []
-      }))
-    ];
+    const localJobs = localJobsRaw.map(j => ({
+      title: j.title,
+      city: j.city,
+      category: j.category,
+      desc: j.description || 'Skelbimas sukurtas per formą (demo).',
+      budget: j.budget ? '~' + j.budget + ' €' : 'Laukiama pasiūlymų',
+      deadline: j.deadline || 'Lankstu',
+      ownerName: j.ownerName || 'Nežinomas klientas',
+      photos: j.photos || [],
+      isDemo:false
+    }));
+
+    const all = [...demoAds, ...localJobs];
 
     all.forEach(ad => {
       const card = document.createElement('div');
       card.className = 'card';
 
+      // thumbnail, jei yra nuotrauka
       if (ad.photos && ad.photos.length) {
         const img = document.createElement('img');
-        img.src = ad.photos[0];
+        img.src = ad.photos[0];   // pirma nuotrauka
         img.className = 'card-thumb';
         card.appendChild(img);
       }
@@ -216,10 +220,10 @@
       budgetChip.textContent = 'Biudžetas: ' + ad.budget;
       chips.appendChild(budgetChip);
 
-      const demoChip = document.createElement('span');
-      demoChip.className = 'chip';
-      demoChip.textContent = localJobs.some(j => j.title === ad.title) ? 'Tavo skelbimas' : 'Demo skelbimas';
-      chips.appendChild(demoChip);
+      const typeChip = document.createElement('span');
+      typeChip.className = 'chip';
+      typeChip.textContent = ad.isDemo ? 'Demo skelbimas' : 'Tavo skelbimas';
+      chips.appendChild(typeChip);
 
       body.appendChild(header);
       body.appendChild(meta);
