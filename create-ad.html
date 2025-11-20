@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <title>Meistriukas – įdėti skelbimą</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{background:#f5f5f7;color:#111827;line-height:1.5;}
+    a{text-decoration:none;color:inherit;}
+    header{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10;}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px;}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:12px;flex-wrap:wrap;}
+    .logo{font-weight:700;font-size:20px;}
+    .logo span{color:#2563eb;}
+    nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    button{border:none;cursor:pointer;border-radius:999px;padding:8px 16px;font-size:14px;}
+    .btn-outline{background:transparent;border:1px solid #d1d5db;}
+    .btn-primary{background:#2563eb;color:#fff;}
+    .muted{font-size:12px;color:#9ca3af;}
+    main{padding:24px 0 40px;}
+    .form-wrapper{max-width:600px;margin:0 auto;background:#fff;border-radius:20px;padding:18px 18px 16px;box-shadow:0 18px 45px rgba(15,23,42,.15);}
+    .section-title{font-size:20px;font-weight:600;margin-bottom:4px;}
+    .section-subtitle{font-size:13px;color:#6b7280;margin-bottom:14px;}
+    label{font-size:13px;color:#374151;display:block;margin-bottom:4px;}
+    input[type="text"],input[type="number"],input[type="file"],textarea,select{
+      width:100%;border-radius:10px;border:1px solid #d1d5db;padding:8px 10px;font-size:14px;outline:none;
+    }
+    textarea{resize:vertical;min-height:80px;}
+    input:focus,textarea:focus,select:focus{border-color:#2563eb;box-shadow:0 0 0 1px #2563eb22;}
+    .field{margin-bottom:10px;}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+    .preview-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+    .preview-img{width:70px;height:70px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container header-inner">
+    <div class="logo"><a href="/">Meistriukas</a><span>.lt</span></div>
+    <nav>
+      <a href="/"><button class="btn-outline">Pagrindinis</button></a>
+      <button class="btn-outline" onclick="goToCreateAd()">Įdėti skelbimą</button>
+      <a href="/ads.html"><button class="btn-outline">Skelbimai</button></a>
+      <a href="/auth.html?mode=login"><button class="btn-outline">Prisijungti</button></a>
+      <a href="/auth.html?mode=register"><button class="btn-primary">Registruotis</button></a>
+      <a href="#" onclick="logout()" id="logoutBtn" style="display:none;">
+        <button class="btn-outline">Atsijungti</button>
+      </a>
+      <span class="muted" id="currentUserLabel">Neprisijungta</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="form-wrapper">
+    <h1 class="section-title">Įdėti skelbimą</h1>
+    <p class="section-subtitle">
+      Ši funkcija prieinama tik prisijungusiems. Skelbimas bus išsaugotas tavo naršyklėje (demo) ir rodomas skelbimų sąraše.
+    </p>
+
+    <form id="createAdForm" onsubmit="handleCreateAd(event)">
+      <div class="field">
+        <label for="adTitle">Darbo pavadinimas</label>
+        <input id="adTitle" type="text" required placeholder="Pvz.: Nudažyti kambario sienas">
+      </div>
+      <div class="field">
+        <label for="adDescription">Aprašymas</label>
+        <textarea id="adDescription" required placeholder="Parašyk, kas turi būti padaryta, kokie matmenys, ar turi medžiagas ir pan."></textarea>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="adCity">Miestas / vietovė</label>
+          <input id="adCity" type="text" required placeholder="Pvz.: Kaunas, Šilainiai">
+        </div>
+        <div class="field">
+          <label for="adCategory">Darbo tipas</label>
+          <select id="adCategory">
+            <option value="dažymas">Dažymas</option>
+            <option value="trinkelės">Trinkelės</option>
+            <option value="baldai">Baldų surinkimas</option>
+            <option value="santechnika">Santechnika</option>
+            <option value="elektra">Elektra</option>
+            <option value="kita">Kita</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="adBudget">Biudžetas (nebūtina)</label>
+          <input id="adBudget" type="number" min="0" placeholder="Pvz.: 150">
+        </div>
+        <div class="field">
+          <label for="adDeadline">Iki kada reikia?</label>
+          <input id="adDeadline" type="text" placeholder="Pvz.: Per 1 savaitę">
+        </div>
+      </div>
+      <div class="field">
+        <label for="adPhoto">Nuotrauka (demo, tik peržiūra)</label>
+        <input id="adPhoto" type="file" accept="image/*" multiple onchange="previewImages(event)">
+        <div id="photoPreview" class="preview-row"></div>
+        <p class="muted">Nuotraukos čia yra tik peržiūrai – tikrame projekte jas reikėtų kelti į serverį.</p>
+      </div>
+
+      <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;">
+        Išsaugoti skelbimą
+      </button>
+    </form>
+  </div>
+</main>
+
+<script>
+  function getCurrentUser() {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function updateHeaderUserLabel() {
+    const label = document.getElementById('currentUserLabel');
+    const user = getCurrentUser();
+    if (!user) { label.textContent = 'Neprisijungta'; return; }
+    const roleText = user.role === 'master' ? 'meistras' : 'klientas';
+    label.textContent = `Prisijungęs kaip: ${user.name} (${roleText})`;
+  }
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    alert('Sėkmingai atsijungei.');
+    window.location.href = '/';
+  }
+
+  function showLogoutIfNeeded() {
+    const user = getCurrentUser();
+    const btn = document.getElementById('logoutBtn');
+    if (!btn) return;
+    btn.style.display = user ? 'inline-block' : 'none';
+  }
+
+  function goToCreateAd() {
+    const user = getCurrentUser();
+    if (!user) {
+      if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
+        window.location.href = '/auth.html?mode=login';
+      }
+      return;
+    }
+    // jau esam create-ad, nieko nedarom
+  }
+
+  function previewImages(e) {
+    const files = e.target.files;
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '';
+    if (!files || !files.length) return;
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.className = 'preview-img';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function handleCreateAd(e) {
+    e.preventDefault();
+    const user = getCurrentUser();
+    if (!user) {
+      alert('Skelbimus gali kurti tik prisijungę. Nukreipsiu į prisijungimą.');
+      window.location.href = '/auth.html?mode=login';
+      return;
+    }
+
+    const title = document.getElementById('adTitle').value.trim();
+    const description = document.getElementById('adDescription').value.trim();
+    const city = document.getElementById('adCity').value.trim();
+    const category = document.getElementById('adCategory').value;
+    const budget = document.getElementById('adBudget').value.trim();
+    const deadline = document.getElementById('adDeadline').value.trim();
+
+    if (!title || !description || !city) {
+      alert('Prašau užpildyti bent pavadinimą, aprašymą ir miestą.');
+      return;
+    }
+
+    const raw = localStorage.getItem('demoJobs') || '[]';
+    let jobs;
+    try { jobs = JSON.parse(raw); } catch { jobs = []; }
+
+    jobs.push({
+      id: Date.now(),
+      title,
+      description,
+      city,
+      category,
+      budget: budget || null,
+      deadline: deadline || 'Lankstu',
+      ownerEmail: user.email,
+      ownerName: user.name,
+      createdAt: new Date().toISOString()
+    });
+
+    localStorage.setItem('demoJobs', JSON.stringify(jobs));
+
+    alert('Skelbimas išsaugotas (tik tavo naršyklėje, demo). Jis dabar matomas „Skelbimų“ puslapyje.');
+    window.location.href = '/ads.html';
+  }
+
+  // inicializacija
+  const user = getCurrentUser();
+  if (!user) {
+    if (confirm('Ši funkcija prieinama tik prisijungusiems. Nori prisijungti dabar?')) {
+      window.location.href = '/auth.html?mode=login';
+    } else {
+      window.location.href = '/';
+    }
+  }
+
+  updateHeaderUserLabel();
+  showLogoutIfNeeded();
+</script>
+</body>
+</html>
