@@ -57,6 +57,35 @@
 </main>
 
 <script>
+  function getCurrentUser() {
+  const raw = localStorage.getItem('currentUser');
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+
+function logout() {
+  localStorage.removeItem('currentUser');
+  alert('Sėkmingai atsijungei.');
+  window.location.href = '/';
+}
+
+function showLogoutIfNeeded() {
+  const user = getCurrentUser();
+  const btn = document.getElementById('logoutBtn');
+  if (!btn) return;
+  btn.style.display = user ? 'inline-block' : 'none';
+}
+
+function goToCreateAd() {
+  const user = getCurrentUser();
+  if (!user) {
+    if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
+      window.location.href = '/auth.html?mode=login';
+    }
+    return;
+  }
+  window.location.href = '/create-ad.html';
+}
   function updateHeaderUserLabel() {
     const label = document.getElementById('currentUserLabel');
     const raw = localStorage.getItem('currentUser');
