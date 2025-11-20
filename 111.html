@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <title>MeistrasTau – rask meistrą smulkiems darbams</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #f5f5f7;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      gap: 12px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .logo span {
+      color: #2563eb;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    main {
+      padding: 24px 0 40px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+
+    .hero-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .pill {
+      background: #e5f0ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .hero-form {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    label {
+      font-size: 13px;
+      color: #374151;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb22;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .job-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .job-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .job-desc {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: #4b5563;
+    }
+
+    .small-label {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .role-toggle {
+      display: inline-flex;
+      border-radius: 999px;
+      background: #e5e7eb;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+
+    .role-toggle button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: #4b5563;
+    }
+
+    .role-toggle button.active {
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+      color: #111827;
+    }
+
+    .muted {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    footer {
+      padding: 16px 0 24px;
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    /* AUTH MODAL */
+
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .backdrop.show {
+      display: flex;
+    }
+
+    .auth-modal {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.3);
+      padding: 18px 18px 16px;
+    }
+
+    .auth-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .auth-tabs {
+      display: inline-flex;
+      border-radius: 999px;
+      background: #e5e7eb;
+      padding: 3px;
+      margin: 8px 0 12px;
+    }
+
+    .auth-tabs button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: #4b5563;
+    }
+
+    .auth-tabs button.active {
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+      color: #111827;
+    }
+
+    .auth-social {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .btn-social {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .btn-social span {
+      font-size: 16px;
+    }
+
+    .auth-divider {
+      text-align: center;
+      position: relative;
+      margin: 6px 0 10px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .auth-divider::before {
+      left: 0;
+    }
+
+    .auth-divider::after {
+      right: 0;
+    }
+
+    .auth-footer {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .auth-footer strong {
+      color: #6b7280;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 840px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header-inner {
+        flex-wrap: wrap;
+      }
+      .hero {
+        margin-top: 8px;
+      }
+      .header-right {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="logo">Meistras<span>Tau</span></div>
+      <div class="header-right">
+        <span class="muted" id="currentUserLabel">Neprisijungta</span>
+        <div class="header-actions">
+          <button class="btn-outline" onclick="scrollToSection('jobsSection')">Peržiūrėti darbus</button>
+          <button class="btn-outline" onclick="openAuthModal('login')">Prisijungti</button>
+          <button class="btn-primary" onclick="openAuthModal('register')">Registruotis</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- AUTH MODAL -->
+  <div id="authBackdrop" class="backdrop">
+    <div class="auth-modal">
+      <div class="auth-header">
+        <div>
+          <div style="font-size:16px;font-weight:600;" id="authTitle">Prisijungimas</div>
+          <div class="muted" id="authSubtitle">Pasirink būdą, kaip nori prisijungti.</div>
+        </div>
+        <button class="close-btn" onclick="closeAuthModal()">×</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tabLogin" class="active" onclick="switchAuthTab('login')">Prisijungti</button>
+        <button id="tabRegister" onclick="switchAuthTab('register')">Registruotis</button>
+      </div>
+
+      <div class="auth-social">
+        <button class="btn-social" onclick="demoSocialLogin('google')">
+          <span>🌐</span> Prisijungti su Google
+        </button>
+        <button class="btn-social" onclick="demoSocialLogin('facebook')">
+          <span>📘</span> Prisijungti su Facebook
+        </button>
+      </div>
+
+      <div class="auth-divider">arba el. paštu</div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="field">
+          <label for="loginEmail">El. paštas</label>
+          <input id="loginEmail" type="email" required placeholder="tavo@pastas.lt">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Slaptažodis</label>
+          <input id="loginPassword" type="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:4px;">Prisijungti</button>
+        <div class="auth-footer">
+          Demo režimas: bet koks el. paštas ir slaptažodis „demo“ sukurs fiktyvų vartotoją.
+        </div>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+        <div class="field">
+          <label for="regName">Vardas</label>
+          <input id="regName" type="text" required placeholder="Vardas">
+        </div>
+        <div class="field">
+          <label for="regEmail">El. paštas</label>
+          <input id="regEmail" type="email" required placeholder="tavo@pastas.lt">
+        </div>
+        <div class="field">
+          <label for="regPassword">Slaptažodis</label>
+          <input id="regPassword" type="password" required placeholder="••••••••">
+        </div>
+        <div class="field">
+          <label for="regRole">Rolė</label>
+          <select id="regRole" required>
+            <option value="client">Esu klientas (ieškau meistro)</option>
+            <option value="master">Esu meistras (teikiu paslaugas)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:4px;">Sukurti paskyrą</button>
+        <div class="auth-footer">
+          <strong>Pastaba:</strong> tai tik demonstracinis prisijungimas – realiai reikėtų serverio ir duomenų bazės.
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <div class="role-toggle">
+          <button id="roleClientBtn" class="active" onclick="setRole('client')">Esu klientas</button>
+          <button id="roleMasterBtn" onclick="setRole('master')">Esu meistras</button>
+        </div>
+        <h1>Įkelk problemą – gauk meistrų pasiūlymus.</h1>
+        <p>
+          Smulkūs remonto darbai, trinkelės, dažymas, baldų surinkimas, santechnika ar elektra – 
+          surink pasiūlymus iš skirtingų meistrų vienoje vietoje.
+        </p>
+        <div class="hero-highlights">
+          <div class="pill">📸 Įkeli nuotrauką ir aprašymą</div>
+          <div class="pill">🛠️ Meistrai siūlo kainą ir laiką</div>
+          <div class="pill">⭐ Klientų atsiliepimai ir įvertinimai</div>
+        </div>
+        <p class="muted">
+          Tai demonstracinė versija (MVP). Realiame variante čia būtų tikras prisijungimas, mokėjimai ir tapatybės patvirtinimas.
+        </p>
+      </div>
+
+      <!-- Naujos užduoties forma -->
+      <div id="newJobForm" class="hero-form">
+        <h3 style="margin-bottom:8px;">Paskelbti naują užduotį</h3>
+        <p class="section-subtitle">Kuo aiškiau aprašysi darbą, tuo tikslesnius pasiūlymus gausi.</p>
+        <form onsubmit="createJob(event)">
+          <div class="field">
+            <label for="jobTitle">Darbo pavadinimas</label>
+            <input id="jobTitle" type="text" placeholder="Pvz.: Nudažyti sieną kambaryje" required>
+          </div>
+          <div class="field">
+            <label for="jobDescription">Aprašymas</label>
+            <textarea id="jobDescription" placeholder="Trumpai aprašyk, kas turi būti padaryta, kokie matmenys, ar yra medžiagos?" required></textarea>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="jobCity">Miestas</label>
+              <input id="jobCity" type="text" placeholder="Pvz.: Kaunas" required>
+            </div>
+            <div class="field">
+              <label for="jobBudget">Biudžetas (nebūtina)</label>
+              <input id="jobBudget" type="number" min="0" placeholder="Pvz.: 150">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="jobCategory">Darbo tipas</label>
+              <select id="jobCategory">
+                <option value="dažymas">Dažymas</option>
+                <option value="trinkelės">Trinkelių klojimas</option>
+                <option value="baldai">Baldų surinkimas</option>
+                <option value="santechnika">Santechnika</option>
+                <option value="elektra">Elektra</option>
+                <option value="kita">Kita</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="jobDeadline">Iki kada reikia?</label>
+              <input id="jobDeadline" type="text" placeholder="Pvz.: Per 1 savaitę">
+            </div>
+          </div>
+          <div class="field">
+            <label for="jobPhotos">Nuotraukos (demo)</label>
+            <input id="jobPhotos" type="text" placeholder="Čia realiai būtų nuotraukų įkėlimo laukas">
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:6px;">
+            Paskelbti užduotį
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Darbų sąrašas meistrams -->
+    <section id="jobsSection">
+      <h2 class="section-title">Naujausios užduotys</h2>
+      <p class="section-subtitle">
+        Šį sąrašą realiame projekte matytų meistrai pagal savo miestą ir specializaciją.
+      </p>
+      <div id="jobsList" class="cards">
+        <!-- Dinamiškai užpildoma iš JS -->
+      </div>
+      <p id="noJobsPlaceholder" class="muted" style="margin-top:8px;">
+        Kol kas užduočių nėra. Pabandyk sukurti savo pirmą užduotį viršuje esančioje formoje.
+      </p>
+    </section>
+
+    <!-- Meistro panelės blokas (demo) -->
+    <section style="margin-top:28px;">
+      <h2 class="section-title">Meistro peržiūra (demo)</h2>
+      <p class="section-subtitle">
+        Jei prisiregistruotum kaip meistras, tavo pagrindinis vaizdas būtų naujų darbų sąrašas ir tavo pateikti pasiūlymai.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:600;">Pavyzdinis meistro profilis</span>
+            <span class="badge">Meistras</span>
+          </div>
+          <p class="job-meta">Vardas: Jonas Meistras</p>
+          <p class="job-meta">Miestai: Kaunas, Kaišiadorys</p>
+          <p class="job-meta">Specializacijos: dažymas, smulkūs remonto darbai</p>
+          <div class="chip-row">
+            <span class="chip">⭐ 4.8 (82 darbai)</span>
+            <span class="chip">Nuo 20 €/val.</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:600;">Pavyzdinis pasiūlymas</span>
+            <span class="badge">Demo</span>
+          </div>
+          <p class="job-desc">
+            Pavyzdžiui, ant realios užduoties paspaudei „Pateikti pasiūlymą“ ir nurodei kainą, kada gali atvykti ir savo komentarą.
+          </p>
+          <p class="job-meta">Siūloma kaina: 150 €</p>
+          <p class="job-meta">Terminas: galiu atvykti per 3 d. d.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    MeistrasTau – demonstracinis prototipas. Tikram projektui reikėtų serverio, duomenų bazės ir tikro prisijungimo.
+  </footer>
+
+  <script>
+    let currentRole = 'client';
+    let currentUser = null; // { name, email, role, provider }
+
+    const jobs = [];
+
+    function updateUserLabel() {
+      const label = document.getElementById('currentUserLabel');
+      const roleClientBtn = document.getElementById('roleClientBtn');
+      const roleMasterBtn = document.getElementById('roleMasterBtn');
+
+      if (!currentUser) {
+        label.textContent = 'Neprisijungta';
+        // nekaitalioju role toggle, palieku kaip buvo
+        return;
+      }
+
+      let roleText = currentUser.role === 'master' ? 'meistras' : 'klientas';
+      label.textContent = `Prisijungęs kaip: ${currentUser.name} (${roleText})`;
+
+      // jei vartotojas turi rolę, perjungiam režimą
+      if (currentUser.role === 'master') {
+        currentRole = 'master';
+        roleMasterBtn.classList.add('active');
+        roleClientBtn.classList.remove('active');
+      } else {
+        currentRole = 'client';
+        roleClientBtn.classList.add('active');
+        roleMasterBtn.classList.remove('active');
+      }
+    }
+
+    function setRole(role) {
+      currentRole = role;
+      const roleClientBtn = document.getElementById('roleClientBtn');
+      const roleMasterBtn = document.getElementById('roleMasterBtn');
+
+      if (role === 'client') {
+        roleClientBtn.classList.add('active');
+        roleMasterBtn.classList.remove('active');
+      } else {
+        roleMasterBtn.classList.add('active');
+        roleClientBtn.classList.remove('active');
+        scrollToSection('jobsSection');
+      }
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // AUTH MODAL FUNKCIJOS
+
+    function openAuthModal(mode) {
+      const backdrop = document.getElementById('authBackdrop');
+      backdrop.classList.add('show');
+      switchAuthTab(mode);
+    }
+
+    function closeAuthModal() {
+      const backdrop = document.getElementById('authBackdrop');
+      backdrop.classList.remove('show');
+    }
+
+    function switchAuthTab(tab) {
+      const tabLogin = document.getElementById('tabLogin');
+      const tabRegister = document.getElementById('tabRegister');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const title = document.getElementById('authTitle');
+      const subtitle = document.getElementById('authSubtitle');
+
+      if (tab === 'login') {
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        title.textContent = 'Prisijungimas';
+        subtitle.textContent = 'Pasirink būdą, kaip nori prisijungti.';
+      } else {
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        title.textContent = 'Registracija';
+        subtitle.textContent = 'Sukurk paskyrą ir pradėk naudotis platforma.';
+      }
+    }
+
+    function demoSocialLogin(provider) {
+      // DEMO: suvaidinam prisijungimą
+      let name = provider === 'google' ? 'Google vartotojas' : 'Facebook vartotojas';
+      currentUser = {
+        name,
+        email: provider + '@demo.lt',
+        role: 'client',
+        provider
+      };
+      updateUserLabel();
+      closeAuthModal();
+      alert('Demo režimas: prisijungta su ' + (provider === 'google' ? 'Google' : 'Facebook') + '.');
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      if (!email || !password) {
+        alert('Prašau įvesti el. paštą ir slaptažodį.');
+        return;
+      }
+
+      // DEMO logika – realiai čia būtų patikra serveryje
+      currentUser = {
+        name: email.split('@')[0] || 'Vartotojas',
+        email,
+        role: 'client',
+        provider: 'password'
+      };
+      updateUserLabel();
+      closeAuthModal();
+      alert('Demo režimas: prisijungei kaip ' + currentUser.name + '.');
+      event.target.reset();
+    }
+
+    function handleRegister(event) {
+      event.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const role = document.getElementById('regRole').value;
+
+      if (!name || !email || !password) {
+        alert('Prašau užpildyti visus laukus.');
+        return;
+      }
+
+      // DEMO logika – realiai čia būtų vartotojo sukūrimas DB
+      currentUser = {
+        name,
+        email,
+        role,
+        provider: 'password'
+      };
+      updateUserLabel();
+      closeAuthModal();
+      alert('Demo režimas: paskyra sukurta ir prisijungta kaip ' + name + '.');
+      event.target.reset();
+    }
+
+    // JOBS LOGIKA
+
+    function createJob(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('jobTitle').value.trim();
+      const description = document.getElementById('jobDescription').value.trim();
+      const city = document.getElementById('jobCity').value.trim();
+      const budget = document.getElementById('jobBudget').value.trim();
+      const category = document.getElementById('jobCategory').value;
+      const deadline = document.getElementById('jobDeadline').value.trim();
+
+      if (!title || !description || !city) {
+        alert('Prašau užpildyti bent pavadinimą, aprašymą ir miestą.');
+        return;
+      }
+
+      const job = {
+        id: Date.now(),
+        title,
+        description,
+        city,
+        budget: budget || null,
+        category,
+        deadline: deadline || 'Lankstu',
+        createdAt: new Date()
+      };
+
+      jobs.unshift(job);
+      renderJobs();
+      event.target.reset();
+    }
+
+    function renderJobs() {
+      const jobsList = document.getElementById('jobsList');
+      const noJobs = document.getElementById('noJobsPlaceholder');
+
+      jobsList.innerHTML = '';
+
+      if (!jobs.length) {
+        noJobs.style.display = 'block';
+        return;
+      }
+
+      noJobs.style.display = 'none';
+
+      jobs.forEach(job => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'job-title';
+        titleEl.textContent = job.title;
+
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = job.category;
+
+        header.appendChild(titleEl);
+        header.appendChild(badge);
+
+        const meta = document.createElement('div');
+        meta.className = 'job-meta';
+        meta.textContent = `${job.city} • Terminas: ${job.deadline}`;
+
+        const desc = document.createElement('div');
+        desc.className = 'job-desc';
+        desc.textContent = job.description;
+
+        const chips = document.createElement('div');
+        chips.className = 'chip-row';
+
+        if (job.budget) {
+          const budgetChip = document.createElement('span');
+          budgetChip.className = 'chip';
+          budgetChip.textContent = `Biudžetas: ~${job.budget} €`;
+          chips.appendChild(budgetChip);
+        } else {
+          const budgetChip = document.createElement('span');
+          budgetChip.className = 'chip';
+          budgetChip.textContent = 'Biudžetas: laukiu pasiūlymų';
+          chips.appendChild(budgetChip);
+        }
+
+        const newChip = document.createElement('span');
+        newChip.className = 'chip';
+        newChip.textContent = 'Nauja užduotis';
+        chips.appendChild(newChip);
+
+        card.appendChild(header);
+        card.appendChild(meta);
+        card.appendChild(desc);
+        card.appendChild(chips);
+
+        jobsList.appendChild(card);
+      });
+    }
+
+    // Pavyzdiniai darbai startui
+    jobs.push(
+      {
+        id: 1,
+        title: 'Sienos dažymas svetainėje',
+        description: 'Reikia nudažyti ~20 m² sieną, dažai bus mano. Reikalingas tvarkingas darbas ir užklijavimas juostomis.',
+        city: 'Kaunas',
+        budget: 120,
+        category: 'dažymas',
+        deadline: 'Per 1 savaitę',
+        createdAt: new Date()
+      },
+      {
+        id: 2,
+        title: 'Trinkelių klojimas kieme',
+        description: 'Apie 30 m², pagrindas jau paruoštas, reikėtų tik sukloti trinkeles ir užpildyti siūles.',
+        city: 'Vilnius',
+        budget: null,
+        category: 'trinkelės',
+        deadline: 'Per 2–3 savaites',
+        createdAt: new Date()
+      }
+    );
+
+    renderJobs();
+  </script>
+</body>
+</html>
