@@ -110,6 +110,8 @@
 </main>
 
 <script>
+  let currentPhotos = [];
+
   function getCurrentUser() {
     const raw = localStorage.getItem('currentUser');
     if (!raw) return null;
@@ -145,14 +147,17 @@
       }
       return;
     }
-    // jau esam create-ad, nieko nedarom
+    // jau esame create-ad puslapyje, nieko nereikia daryti
   }
 
   function previewImages(e) {
     const files = e.target.files;
     const preview = document.getElementById('photoPreview');
     preview.innerHTML = '';
+    currentPhotos = [];
+
     if (!files || !files.length) return;
+
     Array.from(files).forEach(file => {
       const reader = new FileReader();
       reader.onload = ev => {
@@ -160,6 +165,9 @@
         img.src = ev.target.result;
         img.className = 'preview-img';
         preview.appendChild(img);
+
+        // išsaugom base64, kad vėliau galima būtų atvaizduoti skelbimų puslapyje
+        currentPhotos.push(ev.target.result);
       };
       reader.readAsDataURL(file);
     });
@@ -200,16 +208,20 @@
       deadline: deadline || 'Lankstu',
       ownerEmail: user.email,
       ownerName: user.name,
+      photos: currentPhotos || [],
       createdAt: new Date().toISOString()
     });
 
     localStorage.setItem('demoJobs', JSON.stringify(jobs));
 
     alert('Skelbimas išsaugotas (tik tavo naršyklėje, demo). Jis dabar matomas „Skelbimų“ puslapyje.');
+    currentPhotos = [];
+    document.getElementById('createAdForm').reset();
+    document.getElementById('photoPreview').innerHTML = '';
     window.location.href = '/ads.html';
   }
 
-  // inicializacija
+  // inicializacija – į šį puslapį neturėtų patekti neprisijungę
   const user = getCurrentUser();
   if (!user) {
     if (confirm('Ši funkcija prieinama tik prisijungusiems. Nori prisijungti dabar?')) {
