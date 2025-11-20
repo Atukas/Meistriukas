@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <title>Meistriukas – skelbimai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{background:#f5f5f7;color:#111827;line-height:1.5;}
+    a{text-decoration:none;color:inherit;}
+    header{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10;}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px;}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:12px;flex-wrap:wrap;}
+    .logo{font-weight:700;font-size:20px;}
+    .logo span{color:#2563eb;}
+    nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    button{border:none;cursor:pointer;border-radius:999px;padding:8px 16px;font-size:14px;}
+    .btn-outline{background:transparent;border:1px solid #d1d5db;}
+    .btn-primary{background:#2563eb;color:#fff;}
+    .muted{font-size:12px;color:#9ca3af;}
+    main{padding:24px 0 40px;}
+    .section-title{font-size:20px;font-weight:600;margin-bottom:4px;}
+    .section-subtitle{font-size:13px;color:#6b7280;margin-bottom:14px;}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+    .card{background:#fff;border-radius:16px;padding:14px 16px;border:1px solid #e5e7eb;}
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .badge{font-size:11px;padding:3px 8px;border-radius:999px;background:#eff6ff;color:#1d4ed8;}
+    .job-title{font-weight:600;margin-bottom:4px;}
+    .job-meta{font-size:12px;color:#6b7280;margin-bottom:6px;}
+    .job-desc{font-size:13px;color:#4b5563;margin-bottom:8px;}
+    .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+    .chip{font-size:11px;background:#f3f4f6;border-radius:999px;padding:3px 8px;color:#4b5563;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container header-inner">
+    <div class="logo"><a href="/">Meistriukas</a><span>.lt</span></div>
+    <nav>
+      <a href="/"><button class="btn-outline">Pagrindinis</button></a>
+      <a href="/auth.html?mode=login"><button class="btn-outline">Prisijungti</button></a>
+      <a href="/auth.html?mode=register"><button class="btn-primary">Registruotis</button></a>
+      <span class="muted" id="currentUserLabel">Neprisijungta</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h1 class="section-title">Pavyzdiniai skelbimai</h1>
+  <p class="section-subtitle">
+    Čia – tik parodomosios užklausos. Vėliau šiuos skelbimus generuosime iš duomenų bazės.
+  </p>
+
+  <div class="cards" id="adsList">
+    <!-- Užpildoma iš JS -->
+  </div>
+</main>
+
+<script>
+  function updateHeaderUserLabel() {
+    const label = document.getElementById('currentUserLabel');
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) { label.textContent = 'Neprisijungta'; return; }
+    try {
+      const user = JSON.parse(raw);
+      const roleText = user.role === 'master' ? 'meistras' : 'klientas';
+      label.textContent = `Prisijungęs kaip: ${user.name} (${roleText})`;
+    } catch { label.textContent = 'Neprisijungta'; }
+  }
+
+  const demoAds = [
+    {
+      title:'Sienos dažymas svetainėje',
+      city:'Kaunas',
+      category:'dažymas',
+      desc:'Reikia nudažyti ~20 m² sieną, dažai bus mano. Reikalingas tvarkingas darbas ir užklijavimas juostomis.',
+      budget:'~120 €',
+      deadline:'Per 1 savaitę'
+    },
+    {
+      title:'Trinkelių klojimas kieme',
+      city:'Vilnius',
+      category:'trinkelės',
+      desc:'Apie 30 m², pagrindas jau paruoštas, reikėtų tik sukloti trinkeles ir užpildyti siūles.',
+      budget:'Derinama',
+      deadline:'Per 2–3 savaites'
+    },
+    {
+      title:'Dušo kabinos montavimas',
+      city:'Klaipėda',
+      category:'santechnika',
+      desc:'Nauja dušo kabina, reikia pajungti prie esamų vamzdžių ir tvarkingai užsandarinti.',
+      budget:'~80–100 €',
+      deadline:'Šią savaitę'
+    },
+  ];
+
+  // pridėsime ir iš localStorage saugomus demo skelbimus (iš index.html formos)
+  function loadLocalJobs() {
+    const raw = localStorage.getItem('demoJobs');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return []; }
+  }
+
+  function renderAds() {
+    const list = document.getElementById('adsList');
+    list.innerHTML = '';
+    const localJobs = loadLocalJobs();
+
+    const all = [
+      ...demoAds,
+      ...localJobs.map(j => ({
+        title: j.title,
+        city: j.city,
+        category: j.category,
+        desc:'Skelbimas sukurtas per greitą formą pagrindiniame puslapyje (demo).',
+        budget: j.budget ? '~' + j.budget + ' €' : 'Laukiama pasiūlymų',
+        deadline:'Lankstu'
+      }))
+    ];
+
+    all.forEach(ad => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const header = document.createElement('div');
+      header.className = 'card-header';
+
+      const title = document.createElement('div');
+      title.className = 'job-title';
+      title.textContent = ad.title;
+
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = ad.category;
+
+      header.appendChild(title);
+      header.appendChild(badge);
+
+      const meta = document.createElement('div');
+      meta.className = 'job-meta';
+      meta.textContent = `${ad.city} • Terminas: ${ad.deadline}`;
+
+      const desc = document.createElement('div');
+      desc.className = 'job-desc';
+      desc.textContent = ad.desc;
+
+      const chips = document.createElement('div');
+      chips.className = 'chip-row';
+
+      const budgetChip = document.createElement('span');
+      budgetChip.className = 'chip';
+      budgetChip.textContent = 'Biudžetas: ' + ad.budget;
+      chips.appendChild(budgetChip);
+
+      const demoChip = document.createElement('span');
+      demoChip.className = 'chip';
+      demoChip.textContent = 'Demo skelbimas';
+      chips.appendChild(demoChip);
+
+      card.appendChild(header);
+      card.appendChild(meta);
+      card.appendChild(desc);
+      card.appendChild(chips);
+      list.appendChild(card);
+    });
+  }
+
+  updateHeaderUserLabel();
+  renderAds();
+</script>
+</body>
+</html>
