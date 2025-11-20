@@ -22,14 +22,20 @@
     .section-title{font-size:20px;font-weight:600;margin-bottom:4px;}
     .section-subtitle{font-size:13px;color:#6b7280;margin-bottom:14px;}
     .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
-    .card{background:#fff;border-radius:16px;padding:14px 16px;border:1px solid #e5e7eb;}
-    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-    .badge{font-size:11px;padding:3px 8px;border-radius:999px;background:#eff6ff;color:#1d4ed8;}
+    .card{background:#fff;border-radius:16px;padding:14px 16px;border:1px solid #e5e7eb;display:flex;gap:12px;align-items:flex-start;}
+    .card-thumb{width:80px;height:80px;border-radius:12px;object-fit:cover;border:1px solid #e5e7eb;flex-shrink:0;}
+    .card-body{flex:1;min-width:0;}
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
+    .badge{font-size:11px;padding:3px 8px;border-radius:999px;background:#eff6ff;color:#1d4ed8;white-space:nowrap;}
     .job-title{font-weight:600;margin-bottom:4px;}
     .job-meta{font-size:12px;color:#6b7280;margin-bottom:6px;}
     .job-desc{font-size:13px;color:#4b5563;margin-bottom:8px;}
     .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
     .chip{font-size:11px;background:#f3f4f6;border-radius:999px;padding:3px 8px;color:#4b5563;}
+    @media(max-width:600px){
+      .card{flex-direction:column;}
+      .card-thumb{width:100%;height:160px;}
+    }
   </style>
 </head>
 <body>
@@ -38,17 +44,22 @@
     <div class="logo"><a href="/">Meistriukas</a><span>.lt</span></div>
     <nav>
       <a href="/"><button class="btn-outline">Pagrindinis</button></a>
-      <a href="/auth.html?mode=login"><button class="btn-outline">Prisijungti</button></a>
-      <a href="/auth.html?mode=register"><button class="btn-primary">Registruotis</button></a>
+      <button class="btn-outline" onclick="goToCreateAd()">Įdėti skelbimą</button>
+      <a href="/ads.html"><button class="btn-outline">Skelbimai</button></a>
+      <a href="/auth.html?mode=login" id="loginLink"><button class="btn-outline">Prisijungti</button></a>
+      <a href="/auth.html?mode=register" id="registerLink"><button class="btn-primary">Registruotis</button></a>
+      <a href="#" onclick="logout()" id="logoutLink" style="display:none;">
+        <button class="btn-outline">Atsijungti</button>
+      </a>
       <span class="muted" id="currentUserLabel">Neprisijungta</span>
     </nav>
   </div>
 </header>
 
 <main class="container">
-  <h1 class="section-title">Pavyzdiniai skelbimai</h1>
+  <h1 class="section-title">Skelbimai</h1>
   <p class="section-subtitle">
-    Čia – tik parodomosios užklausos. Vėliau šiuos skelbimus generuosime iš duomenų bazės.
+    Čia matai pavyzdinius skelbimus ir tuos, kuriuos pats sukūrei (saugoma tik tavo naršyklėje).
   </p>
 
   <div class="cards" id="adsList">
@@ -58,43 +69,47 @@
 
 <script>
   function getCurrentUser() {
-  const raw = localStorage.getItem('currentUser');
-  if (!raw) return null;
-  try { return JSON.parse(raw); } catch { return null; }
-}
-
-function logout() {
-  localStorage.removeItem('currentUser');
-  alert('Sėkmingai atsijungei.');
-  window.location.href = '/';
-}
-
-function showLogoutIfNeeded() {
-  const user = getCurrentUser();
-  const btn = document.getElementById('logoutBtn');
-  if (!btn) return;
-  btn.style.display = user ? 'inline-block' : 'none';
-}
-
-function goToCreateAd() {
-  const user = getCurrentUser();
-  if (!user) {
-    if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
-      window.location.href = '/auth.html?mode=login';
-    }
-    return;
-  }
-  window.location.href = '/create-ad.html';
-}
-  function updateHeaderUserLabel() {
-    const label = document.getElementById('currentUserLabel');
     const raw = localStorage.getItem('currentUser');
-    if (!raw) { label.textContent = 'Neprisijungta'; return; }
-    try {
-      const user = JSON.parse(raw);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    alert('Sėkmingai atsijungei.');
+    window.location.href = '/';
+  }
+
+  function updateUserUI() {
+    const user = getCurrentUser();
+    const label = document.getElementById('currentUserLabel');
+    const loginLink = document.getElementById('loginLink');
+    const registerLink = document.getElementById('registerLink');
+    const logoutLink = document.getElementById('logoutLink');
+
+    if (user) {
       const roleText = user.role === 'master' ? 'meistras' : 'klientas';
       label.textContent = `Prisijungęs kaip: ${user.name} (${roleText})`;
-    } catch { label.textContent = 'Neprisijungta'; }
+      if (loginLink) loginLink.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+      if (logoutLink) logoutLink.style.display = 'inline-block';
+    } else {
+      label.textContent = 'Neprisijungta';
+      if (loginLink) loginLink.style.display = 'inline-block';
+      if (registerLink) registerLink.style.display = 'inline-block';
+      if (logoutLink) logoutLink.style.display = 'none';
+    }
+  }
+
+  function goToCreateAd() {
+    const user = getCurrentUser();
+    if (!user) {
+      if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
+        window.location.href = '/auth.html?mode=login';
+      }
+      return;
+    }
+    window.location.href = '/create-ad.html';
   }
 
   const demoAds = [
@@ -104,7 +119,9 @@ function goToCreateAd() {
       category:'dažymas',
       desc:'Reikia nudažyti ~20 m² sieną, dažai bus mano. Reikalingas tvarkingas darbas ir užklijavimas juostomis.',
       budget:'~120 €',
-      deadline:'Per 1 savaitę'
+      deadline:'Per 1 savaitę',
+      ownerName:'Demo klientas',
+      photos:[]
     },
     {
       title:'Trinkelių klojimas kieme',
@@ -112,7 +129,9 @@ function goToCreateAd() {
       category:'trinkelės',
       desc:'Apie 30 m², pagrindas jau paruoštas, reikėtų tik sukloti trinkeles ir užpildyti siūles.',
       budget:'Derinama',
-      deadline:'Per 2–3 savaites'
+      deadline:'Per 2–3 savaites',
+      ownerName:'Demo klientas',
+      photos:[]
     },
     {
       title:'Dušo kabinos montavimas',
@@ -120,11 +139,12 @@ function goToCreateAd() {
       category:'santechnika',
       desc:'Nauja dušo kabina, reikia pajungti prie esamų vamzdžių ir tvarkingai užsandarinti.',
       budget:'~80–100 €',
-      deadline:'Šią savaitę'
+      deadline:'Šią savaitę',
+      ownerName:'Demo klientas',
+      photos:[]
     },
   ];
 
-  // pridėsime ir iš localStorage saugomus demo skelbimus (iš index.html formos)
   function loadLocalJobs() {
     const raw = localStorage.getItem('demoJobs');
     if (!raw) return [];
@@ -134,6 +154,7 @@ function goToCreateAd() {
   function renderAds() {
     const list = document.getElementById('adsList');
     list.innerHTML = '';
+
     const localJobs = loadLocalJobs();
 
     const all = [
@@ -142,15 +163,28 @@ function goToCreateAd() {
         title: j.title,
         city: j.city,
         category: j.category,
-        desc:'Skelbimas sukurtas per greitą formą pagrindiniame puslapyje (demo).',
-        budget: j.budget ? '~' + j.budget + ' €' : 'Laukiama pasiūlymų',
-        deadline:'Lankstu'
+        desc: j.description || 'Skelbimas sukurtas per formą (demo).',
+        budget: j.budget ? '~' + j.budget + ' €' : 'Laukiama
+        pasiūlymų',
+        deadline: j.deadline || 'Lankstu',
+        ownerName: j.ownerName || 'Nežinomas klientas',
+        photos: j.photos || []
       }))
     ];
 
     all.forEach(ad => {
       const card = document.createElement('div');
       card.className = 'card';
+
+      if (ad.photos && ad.photos.length) {
+        const img = document.createElement('img');
+        img.src = ad.photos[0];
+        img.className = 'card-thumb';
+        card.appendChild(img);
+      }
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
 
       const header = document.createElement('div');
       header.className = 'card-header';
@@ -168,7 +202,7 @@ function goToCreateAd() {
 
       const meta = document.createElement('div');
       meta.className = 'job-meta';
-      meta.textContent = `${ad.city} • Terminas: ${ad.deadline}`;
+      meta.textContent = `${ad.city} • Terminas: ${ad.deadline} • Klientas: ${ad.ownerName}`;
 
       const desc = document.createElement('div');
       desc.className = 'job-desc';
@@ -184,18 +218,20 @@ function goToCreateAd() {
 
       const demoChip = document.createElement('span');
       demoChip.className = 'chip';
-      demoChip.textContent = 'Demo skelbimas';
+      demoChip.textContent = localJobs.some(j => j.title === ad.title) ? 'Tavo skelbimas' : 'Demo skelbimas';
       chips.appendChild(demoChip);
 
-      card.appendChild(header);
-      card.appendChild(meta);
-      card.appendChild(desc);
-      card.appendChild(chips);
+      body.appendChild(header);
+      body.appendChild(meta);
+      body.appendChild(desc);
+      body.appendChild(chips);
+
+      card.appendChild(body);
       list.appendChild(card);
     });
   }
 
-  updateHeaderUserLabel();
+  updateUserUI();
   renderAds();
 </script>
 </body>
