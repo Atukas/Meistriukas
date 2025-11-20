@@ -40,7 +40,13 @@
     <div class="logo"><a href="/">Meistriukas</a><span>.lt</span></div>
     <nav>
       <a href="/"><button class="btn-outline">Pagrindinis</button></a>
+      <button class="btn-outline" onclick="goToCreateAd()">Įdėti skelbimą</button>
       <a href="/ads.html"><button class="btn-outline">Skelbimai</button></a>
+      <a href="/auth.html?mode=login" id="loginLink"><button class="btn-outline">Prisijungti</button></a>
+      <a href="/auth.html?mode=register" id="registerLink"><button class="btn-primary">Registruotis</button></a>
+      <a href="#" onclick="logout()" id="logoutLink" style="display:none;">
+        <button class="btn-outline">Atsijungti</button>
+      </a>
       <span class="muted" id="currentUserLabel">Neprisijungta</span>
     </nav>
   </div>
@@ -112,44 +118,47 @@
 
 <script>
   function getCurrentUser() {
-  const raw = localStorage.getItem('currentUser');
-  if (!raw) return null;
-  try { return JSON.parse(raw); } catch { return null; }
-}
-
-function logout() {
-  localStorage.removeItem('currentUser');
-  alert('Sėkmingai atsijungei.');
-  window.location.href = '/';
-}
-
-function showLogoutIfNeeded() {
-  const user = getCurrentUser();
-  const btn = document.getElementById('logoutBtn');
-  if (!btn) return;
-  btn.style.display = user ? 'inline-block' : 'none';
-}
-
-function goToCreateAd() {
-  const user = getCurrentUser();
-  if (!user) {
-    if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
-      window.location.href = '/auth.html?mode=login';
-    }
-    return;
-  }
-  window.location.href = '/create-ad.html';
-}
-  // Bendra: vartotojo rodymas header'yje
-  function updateHeaderUserLabel() {
-    const label = document.getElementById('currentUserLabel');
     const raw = localStorage.getItem('currentUser');
-    if (!raw) { label.textContent = 'Neprisijungta'; return; }
-    try {
-      const user = JSON.parse(raw);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    alert('Sėkmingai atsijungei.');
+    window.location.href = '/';
+  }
+
+  function updateUserUI() {
+    const user = getCurrentUser();
+    const label = document.getElementById('currentUserLabel');
+    const loginLink = document.getElementById('loginLink');
+    const registerLink = document.getElementById('registerLink');
+    const logoutLink = document.getElementById('logoutLink');
+
+    if (user) {
       const roleText = user.role === 'master' ? 'meistras' : 'klientas';
       label.textContent = `Prisijungęs kaip: ${user.name} (${roleText})`;
-    } catch { label.textContent = 'Neprisijungta'; }
+      if (loginLink) loginLink.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+      if (logoutLink) logoutLink.style.display = 'inline-block';
+    } else {
+      label.textContent = 'Neprisijungta';
+      if (loginLink) loginLink.style.display = 'inline-block';
+      if (registerLink) registerLink.style.display = 'inline-block';
+      if (logoutLink) logoutLink.style.display = 'none';
+    }
+  }
+
+  function goToCreateAd() {
+    const user = getCurrentUser();
+    if (!user) {
+      if (confirm('Skelbimus gali kurti tik prisijungę. Nori prisijungti dabar?')) {
+        window.location.href = '/auth.html?mode=login';
+      }
+      return;
+    }
+    window.location.href = '/create-ad.html';
   }
 
   function switchAuthTab(tab) {
@@ -174,7 +183,6 @@ function goToCreateAd() {
     }
   }
 
-  // Užkraunam page mode iš ?mode=...
   function initModeFromQuery() {
     const params = new URLSearchParams(window.location.search);
     const mode = params.get('mode');
@@ -252,7 +260,7 @@ function goToCreateAd() {
     } catch {}
   }
 
-  updateHeaderUserLabel();
+  updateUserUI();
   initModeFromQuery();
   preloadRememberedLogin();
 </script>
